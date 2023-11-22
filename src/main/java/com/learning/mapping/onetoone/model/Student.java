@@ -1,9 +1,11 @@
-package com.learning.mapping.model;
+package com.learning.mapping.onetoone.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -22,8 +24,7 @@ public class Student {
 	private int studentId;
 	private String studentName;
 	private String course;
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL) // Cascade - Save dependent entity (Laptop) also while saving main (Student)
+	@JoinColumn(name = "laptopId")
 	private Laptop laptop;
-	
-
 }
