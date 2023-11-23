@@ -70,6 +70,19 @@ public class SpringBootMappingApplication implements CommandLineRunner {
 		
 		customerRepository.save(customer);
 		
+		//Get Address from Customer
+		
+		Optional<Customer> optionalCustomer = customerRepository.findById(1);
+		Customer c= optionalCustomer.get();
+		System.out.println(c.getCustomerName());
+	//	System.out.println(c.getAddressList().get(0).getDistrict());
+		
+		//Get customer from address
+		Optional<Address> optionalAddress = addressRepository.findById(2);
+		Address address = optionalAddress.get();
+		System.out.println(address.getCustomer().getCustomerId());
+		System.out.println(address.getCustomer().getCustomerName());
+		
 	}
 
 	private void oneToOneMapping() {
