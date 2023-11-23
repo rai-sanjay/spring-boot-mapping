@@ -1,5 +1,7 @@
 package com.learning.mapping;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.learning.mapping.onetomany.model.Address;
+import com.learning.mapping.onetomany.model.Customer;
+import com.learning.mapping.onetomany.repository.IAddressRepository;
+import com.learning.mapping.onetomany.repository.ICustomerRepository;
 import com.learning.mapping.onetoone.model.Laptop;
 import com.learning.mapping.onetoone.model.Student;
 import com.learning.mapping.onetoone.repository.ILaptopRepository;
@@ -20,6 +26,12 @@ public class SpringBootMappingApplication implements CommandLineRunner {
 	
 	@Autowired
 	ILaptopRepository laptopRepository;
+	
+	@Autowired
+	ICustomerRepository customerRepository;
+	
+	@Autowired
+	IAddressRepository addressRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootMappingApplication.class, args);
@@ -28,9 +40,38 @@ public class SpringBootMappingApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		oneToOneMapping();
+		oneToManyMapping();
 
 	}
 	
+	private void oneToManyMapping() {
+		
+		Customer customer = new Customer();
+		customer.setCustomerName("Sanjay Yadav");
+		
+		Address presentAddress = new Address();
+		presentAddress.setStreet("Budha Colony");
+		presentAddress.setPincode("841311");
+		presentAddress.setDistrict("Patna");
+		/* if we don't set customer in address then, customer_id column of Address table will be NULL*/
+		presentAddress.setCustomer(customer);
+		
+		Address permanentAddress = new Address();
+		permanentAddress.setStreet("Parsa Jogini");
+		permanentAddress.setPincode("841311");
+		permanentAddress.setDistrict("Chhapra");
+		/* if we don't set customer in address then, customer_id column of Address table will be NULL*/
+		permanentAddress.setCustomer(customer);
+		
+		List<Address> addressList = new ArrayList<>();
+		addressList.add(permanentAddress);
+		addressList.add(presentAddress);
+		customer.setAddressList(addressList);
+		
+		customerRepository.save(customer);
+		
+	}
+
 	private void oneToOneMapping() {
 		
 		Student student = new Student();
