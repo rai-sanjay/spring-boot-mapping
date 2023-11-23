@@ -75,7 +75,7 @@ public class SpringBootMappingApplication implements CommandLineRunner {
 		Optional<Customer> optionalCustomer = customerRepository.findById(1);
 		Customer c= optionalCustomer.get();
 		System.out.println(c.getCustomerName());
-	//	System.out.println(c.getAddressList().get(0).getDistrict());
+		System.out.println(c.getAddressList().get(0).getDistrict());
 		
 		//Get customer from address
 		Optional<Address> optionalAddress = addressRepository.findById(2);
