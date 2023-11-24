@@ -1,6 +1,7 @@
 package com.learning.mapping;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.learning.mapping.manytomany.model.Role;
+import com.learning.mapping.manytomany.model.User;
+import com.learning.mapping.manytomany.repository.IRoleRepository;
+import com.learning.mapping.manytomany.repository.IUserRepository;
 import com.learning.mapping.onetomany.model.Address;
 import com.learning.mapping.onetomany.model.Customer;
 import com.learning.mapping.onetomany.repository.IAddressRepository;
@@ -32,6 +37,12 @@ public class SpringBootMappingApplication implements CommandLineRunner {
 	
 	@Autowired
 	IAddressRepository addressRepository;
+	
+	@Autowired
+	IUserRepository userRepository;
+	
+	@Autowired
+	IRoleRepository roleRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootMappingApplication.class, args);
@@ -41,9 +52,55 @@ public class SpringBootMappingApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		oneToOneMapping();
 		oneToManyMapping();
+		manyToManyMapping();
 
 	}
 	
+	private void manyToManyMapping() {
+		User user = new User();
+		user.setUserName("RAI_SANJAY");
+		Role role1 = new Role();
+		role1.setRoleName("ADMIN");
+		
+		Role role2 = new Role();
+		role2.setRoleName("MODERATOR");
+		List<Role> roles = new ArrayList<>();
+		roles.add(role1);
+		roles.add(role2);
+		user.setRoles(roles);
+		userRepository.save(user);
+		
+		Role role = new Role();
+		role.setRoleName("MANAGER");
+		
+		User user1 = new User();
+		user1.setUserName("Yadav_Sanjay");
+		user1.setRoles(Arrays.asList(role)); // If not, no entry in users_roles table
+		
+		User user2 = new User();
+		user2.setUserName("Yadav_Abhyant");
+		user2.setRoles(Arrays.asList(role)); // If not, no entry in users_roles table
+		
+		List<User> users = new ArrayList<>();
+		users.add(user1);
+		users.add(user2);
+		role.setUsers(users);
+		roleRepository.save(role);
+		System.out.println("====================================");
+		// Get roles for an user
+		User u1 = userRepository.findById(1).get();
+		u1.getRoles().forEach(e -> {
+			System.out.println(e.getRoleName());
+		});
+		System.out.println("====================================");
+		// Get Users of a particular role
+		Role r = roleRepository.findById(3).get();
+		r.getUsers().forEach(e->{
+			System.out.println(e.getUserName());
+		});
+		System.out.println("====================================");
+	}
+
 	private void oneToManyMapping() {
 		
 		Customer customer = new Customer();
